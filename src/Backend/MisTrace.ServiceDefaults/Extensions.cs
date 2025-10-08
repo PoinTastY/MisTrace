@@ -41,6 +41,7 @@ public static class Extensions
         //     options.AllowedSchemes = ["https"];
         // });
 
+        
         return builder;
     }
 
@@ -120,6 +121,9 @@ public static class Extensions
             {
                 Predicate = r => r.Tags.Contains("live")
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
         return app;

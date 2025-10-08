@@ -1,4 +1,5 @@
 using MisTrace.ServiceDefaults;
+using Microsoft.EntityFrameworkCore.Design;
 
 var builder = WebApplication.CreateBuilder(args);
 

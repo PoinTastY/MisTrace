@@ -20,9 +20,12 @@ namespace MisTrace.ServiceDefaults
 
             services.AddIdentityApiEndpoints<MisTraceUser>()
                 .AddEntityFrameworkStores<MisTraceDbContext>();
-
+           
             //Email service, required by Identity
             services.AddSingleton<IEmailSender, EmailSender>();
+
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
 
             return services;
         }
@@ -30,8 +33,8 @@ namespace MisTrace.ServiceDefaults
         private static IServiceCollection AddPersistency(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment enviroment)
         {
             string connectionString = enviroment.IsDevelopment()
-                ? Environment.GetEnvironmentVariable("CREWDO_DB_DEV") ?? throw new InvalidOperationException("Environment variable 'AUTH_DB_DEV' not set.")
-                : Environment.GetEnvironmentVariable("CREWDO_DB_PROD") ?? throw new InvalidOperationException("Environment variable 'AUTH_DB_PROD' not set.");
+                ? Environment.GetEnvironmentVariable("MISTRACE_DB_DEV") ?? throw new InvalidOperationException("Environment variable 'AUTH_DB_DEV' not set.")
+                : Environment.GetEnvironmentVariable("MISTRACE_DB_PROD") ?? throw new InvalidOperationException("Environment variable 'AUTH_DB_PROD' not set.");
 
             services.AddDbContext<MisTraceDbContext>(options =>
             {
