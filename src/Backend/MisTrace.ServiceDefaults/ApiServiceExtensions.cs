@@ -1,12 +1,8 @@
-﻿using CrewDo.Infrastructure.Services.Email;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MisTrace.Domain.Entities;
 using MisTrace.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 namespace MisTrace.ServiceDefaults
 {
@@ -14,27 +10,21 @@ namespace MisTrace.ServiceDefaults
     {
         public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment enviroment)
         {
-            services.AddPersistency(configuration, enviroment);
+            services.AddStores(configuration, enviroment);
 
             services.AddAuthorization();
 
-            services.AddIdentityApiEndpoints<MisTraceUser>()
-                .AddEntityFrameworkStores<MisTraceDbContext>();
-           
-            //Email service, required by Identity
-            services.AddSingleton<IEmailSender, EmailSender>();
-
             services.AddEndpointsApiExplorer();
+
             services.AddSwaggerGen();
 
             return services;
         }
 
-        private static IServiceCollection AddPersistency(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment enviroment)
+        private static IServiceCollection AddStores(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment enviroment)
         {
-            string connectionString = enviroment.IsDevelopment()
-                ? Environment.GetEnvironmentVariable("MISTRACE_DB_DEV") ?? throw new InvalidOperationException("Environment variable 'AUTH_DB_DEV' not set.")
-                : Environment.GetEnvironmentVariable("MISTRACE_DB_PROD") ?? throw new InvalidOperationException("Environment variable 'AUTH_DB_PROD' not set.");
+            string connectionString = Environment.GetEnvironmentVariable("MISTRACE_DB")
+                ?? throw new InvalidOperationException("Environment variable 'MISTRACE_DB' not set.");
 
             services.AddDbContext<MisTraceDbContext>(options =>
             {

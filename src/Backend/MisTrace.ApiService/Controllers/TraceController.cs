@@ -6,14 +6,13 @@ namespace MisTrace.ApiService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class TraceController : ControllerBase
     {
         [Authorize]
         [HttpPost]
-        public IActionResult Login([FromBody] LoginRequest loginRequest)
+        public IActionResult CreateTrace([FromBody] LoginRequest loginRequest)
         {
-
-            return Ok();
+            return StatusCode(501, "This endpoint is not implemented yet lol");
         }
     }
 }
