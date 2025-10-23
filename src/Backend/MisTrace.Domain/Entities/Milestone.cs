@@ -8,5 +8,6 @@ namespace MisTrace.Domain.Entities
         public string? Description { get; set; }
         public required Guid CreatedById { get; set; }
         public bool ConcludesService { get; set; } = false;
+        public bool Notify { get; set; } = true;
     }
 }

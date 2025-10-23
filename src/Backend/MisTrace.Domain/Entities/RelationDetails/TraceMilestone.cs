@@ -10,5 +10,7 @@ namespace MisTrace.Domain.Entities.RelationDetails
         public int MilestoneId { get; set; }
         [ForeignKey("MilestoneId")]
         public virtual Milestone Milestone { get; set; } = null!;
+        public string? Comments { get; set; }
+        public bool Notified { get; set; } = false;
     }
 }

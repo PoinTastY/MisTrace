@@ -70,7 +70,6 @@ public static class ServiceDefaults
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.IncludeErrorDetails = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -80,27 +79,6 @@ public static class ServiceDefaults
                     ValidIssuer = "Stare-Y",
                     ValidAudience = "AuthKrakenClient",
                     IssuerSigningKey = new RsaSecurityKey(rsa)
-                };
-                // 👇 log all token validation errors
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        var rawHeader = context.Request.Headers["Authorization"].ToString();
-                        Console.WriteLine("Raw Authorization header: " + rawHeader);
-                        Console.WriteLine("Token validation failed: " + context.Exception);
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = context =>
-                    {
-                        Console.WriteLine($"OnChallenge error: {context.Error}, description: {context.ErrorDescription}");
-                        return Task.CompletedTask;
-                    },
-                    OnForbidden = context =>
-                    {
-                        Console.WriteLine("Token was valid but access was forbidden.");
-                        return Task.CompletedTask;
-                    }
                 };
             }
             );

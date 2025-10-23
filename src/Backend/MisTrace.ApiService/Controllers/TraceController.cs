@@ -10,7 +10,7 @@ namespace MisTrace.ApiService.Controllers
     {
         [Authorize]
         [HttpPost]
-        public IActionResult CreateTrace([FromBody] LoginRequest loginRequest)
+        public IActionResult CreateTrace()
         {
             return StatusCode(501, "This endpoint is not implemented yet lol");
         }
