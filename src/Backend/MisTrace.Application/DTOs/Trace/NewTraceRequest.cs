@@ -1,0 +1,7 @@
+namespace MisTrace.Application.DTOs.Trace;
+
+public record NewTraceRequest
+{
+    public required string Name { get; init; }
+    public string? Description { get; init; } = null;
+}
