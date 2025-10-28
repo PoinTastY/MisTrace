@@ -7,7 +7,7 @@ using MisTrace.Application.Interfaces;
 namespace MisTrace.ApiService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class TraceController : ControllerBase
     {
         private readonly ITraceService _traceService;
