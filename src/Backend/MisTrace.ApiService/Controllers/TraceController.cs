@@ -20,11 +20,21 @@ namespace MisTrace.ApiService.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTrace([FromBody] NewTraceRequest request)
         {
+            string? subValue = User.FindFirstValue("sub");
+            if (subValue is null)
+                throw new UnauthorizedAccessException("Missing subject claim");
 
-            Guid subject = Guid.Parse(User.FindFirstValue("sub")
-                ?? throw new UnauthorizedAccessException("Missing subject claim"));
-            int orgId = int.Parse(User.FindFirstValue("org")
-                ?? throw new UnauthorizedAccessException("Missing org claim"));
+            Guid subject = Guid.Parse(subValue);
+
+            string? orgValue = User.FindFirstValue("org");
+            if (orgValue is null)
+                throw new UnauthorizedAccessException("Missing org claim");
+
+            int orgId = int.Parse(orgValue);
+
+            if (orgId == 0)
+                throw new InvalidOperationException("Invalid org claim");
+
             try
             {
                 NewTraceResponse response = await _traceService.AddNewTrace(request, subject, orgId);
