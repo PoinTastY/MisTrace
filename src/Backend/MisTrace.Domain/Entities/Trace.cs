@@ -9,7 +9,7 @@ namespace MisTrace.Domain.Entities
         public string? Description { get; set; }
         public required Guid CreatedById { get; set; }
         public required int OrganizationId { get; set; }
-        public virtual ICollection<TraceMilestone> ServiceMilestones { get; set; } = [];
+        public virtual ICollection<TraceMilestone> TraceMilestones { get; set; } = [];
         public bool IsActive { get; set; } = true;
     }
 }

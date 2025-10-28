@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MisTrace.Application.DTOs.Trace;
+using MisTrace.Application.DTOs.TraceDtos;
 using MisTrace.Application.Interfaces;
 
 namespace MisTrace.ApiService.Controllers
@@ -19,9 +20,14 @@ namespace MisTrace.ApiService.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTrace([FromBody] NewTraceRequest request)
         {
+
+            Guid subject = Guid.Parse(User.FindFirstValue("sub")
+                ?? throw new UnauthorizedAccessException("Missing subject claim"));
+            int orgId = int.Parse(User.FindFirstValue("org")
+                ?? throw new UnauthorizedAccessException("Missing org claim"));
             try
             {
-                NewTraceResponse response = await _traceService.AddNewTrace(request);
+                NewTraceResponse response = await _traceService.AddNewTrace(request, subject, orgId);
 
                 return CreatedAtAction(
                     nameof(GetTraceById),

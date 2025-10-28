@@ -1,4 +1,4 @@
-namespace MisTrace.Application.DTOs.Trace;
+namespace MisTrace.Application.DTOs.TraceDtos;
 
 public record NewTraceResponse
 {
