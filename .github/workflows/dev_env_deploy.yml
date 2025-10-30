@@ -1,0 +1,39 @@
+name: Deploy to dev_env
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH with secrets
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          password: ${{ secrets.DEPLOY_PASS }}
+          port: 22
+          script: |
+            REPO_DIR="/home/deploy/auth_kraken/api"
+
+            if [ ! -d "$REPO_DIR/.git" ]; then
+              echo "Repo not found, cloning..."
+              rm -rf "$REPO_DIR"
+              git clone -b dev https://github.com/PoinTastY/MisTrace.git "$REPO_DIR"
+            else
+              echo "Repo found, pulling latest changes..."
+              cd "$REPO_DIR"
+              git fetch origin dev
+              git reset --hard origin/dev
+            fi
+
+            cd "$REPO_DIR/src"
+            docker-compose down
+            docker-compose up -d --build
