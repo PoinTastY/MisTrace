@@ -16,7 +16,7 @@ COPY ["MisTrace.Domain/MisTrace.Domain.csproj", "MisTrace.Domain/"]
 COPY ["MisTrace.Infrastructure/MisTrace.Infrastructure.csproj", "MisTrace.Infrastructure/"]
 RUN dotnet restore "./MisTrace/MisTrace.ApiService.csproj"
 COPY . .
-WORKDIR "/Backend/MisTrace/MisTrace.ApiService"
+WORKDIR "/Backend/MisTrace.ApiService"
 RUN dotnet build "./MisTrace.ApiService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
