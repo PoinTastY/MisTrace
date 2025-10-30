@@ -21,7 +21,7 @@ jobs:
           password: ${{ secrets.DEPLOY_PASS }}
           port: 22
           script: |
-            REPO_DIR="/home/deploy/auth_kraken/api"
+            REPO_DIR="/home/deploy/MisTrace/"
 
             if [ ! -d "$REPO_DIR/.git" ]; then
               echo "Repo not found, cloning..."
