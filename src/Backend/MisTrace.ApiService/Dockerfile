@@ -10,7 +10,7 @@ EXPOSE 2122
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /Backend
-COPY ["MisTrace/MisTrace.ApiService.csproj", "MisTrace.ApiService/"]
+COPY ["MisTrace.ApiService/MisTrace.ApiService.csproj", "MisTrace.ApiService/"]
 COPY ["MisTrace.Application/MisTrace.Application.csproj", "MisTrace.Application/"]
 COPY ["MisTrace.Domain/MisTrace.Domain.csproj", "MisTrace.Domain/"]
 COPY ["MisTrace.Infrastructure/MisTrace.Infrastructure.csproj", "MisTrace.Infrastructure/"]
