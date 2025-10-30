@@ -58,6 +58,13 @@ public static class ServiceDefaults
                     }
                 });
 
+                if (enviroment.IsProduction())
+                {
+                    c.AddServer(new OpenApiServer
+                    {
+                        Url = "/MisTrace"
+                    });
+                }
             });
 
         services.AddAppServices(configuration);
