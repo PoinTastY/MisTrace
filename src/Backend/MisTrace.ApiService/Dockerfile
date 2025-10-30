@@ -14,7 +14,7 @@ COPY ["MisTrace.ApiService/MisTrace.ApiService.csproj", "MisTrace.ApiService/"]
 COPY ["MisTrace.Application/MisTrace.Application.csproj", "MisTrace.Application/"]
 COPY ["MisTrace.Domain/MisTrace.Domain.csproj", "MisTrace.Domain/"]
 COPY ["MisTrace.Infrastructure/MisTrace.Infrastructure.csproj", "MisTrace.Infrastructure/"]
-RUN dotnet restore "./MisTrace/MisTrace.ApiService.csproj"
+RUN dotnet restore "./MisTrace.ApiService/MisTrace.ApiService.csproj"
 COPY . .
 WORKDIR "/Backend/MisTrace.ApiService"
 RUN dotnet build "./MisTrace.ApiService.csproj" -c $BUILD_CONFIGURATION -o /app/build
