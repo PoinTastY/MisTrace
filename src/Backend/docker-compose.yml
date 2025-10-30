@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: MisTrace.ApiService/Dockerfile
+    container_name: mistrace_api
+    ports:
+      - "2122:2122"
+    restart: unless-stopped
+    environment:
+      - AUTH_KRAKEN_PUBLIC_KEY=/secrets/public.key
+      - MISTRACE_DB
+      - TWILIO_ACCOUNTSID
+      - TWILIO_AUTHTOKEN
+      - TWILIO_FROMWHATSAPP
+
+    volumes:
+      - /home/deploy/auth_kraken/api/secrets/public.key:/secrets/public.key:ro
+    network_mode: "host"

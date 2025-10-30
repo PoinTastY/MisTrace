@@ -4,6 +4,12 @@ using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using MisTrace.Application.Interfaces;
+using MisTrace.Infrastructure.Services.Notification;
+using MisTrace.Domain.Interfaces.Repos;
+using MisTrace.Infrastructure.Repos;
+using MisTrace.Infrastructure.Services;
+using MisTrace.Application.Settings;
 
 
 namespace MisTrace.ApiService.Extensions;
@@ -54,6 +60,8 @@ public static class ServiceDefaults
 
             });
 
+        services.AddAppServices(configuration);
+
         return services;
     }
 
@@ -88,6 +96,18 @@ public static class ServiceDefaults
         return services;
     }
 
+    private static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<TwillioSettings>(configuration.GetSection("Twilio"));
+
+        services.AddScoped<ITwillioService, TwilioService>();
+        services.AddScoped<ITraceRepo, TraceRepo>();
+        services.AddScoped<IMilestoneRepo, MilestoneRepo>();
+        services.AddScoped<ITraceService, TraceService>();
+
+        return services;
+    }
+
     private static IServiceCollection AddStores(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment enviroment)
     {
         string connectionString = Environment.GetEnvironmentVariable("MISTRACE_DB")
@@ -107,7 +127,9 @@ public static class ServiceDefaults
         {
             "MISTRACE_DB",
             "AUTH_KRAKEN_PUBLIC_KEY",
-            "AUTH_KRAKEN_ENCRYPTION_KEY"
+            "TWILIO_ACCOUNTSID",
+            "TWILIO_AUTHTOKEN",
+            "TWILIO_FROMWHATSAPP"
         };
 
         foreach (string variable in requiredVariables)

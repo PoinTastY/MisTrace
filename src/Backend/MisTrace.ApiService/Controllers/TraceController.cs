@@ -50,6 +50,7 @@ namespace MisTrace.ApiService.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("list")]
         public async Task<IActionResult> GetActiveTraces()
         {
@@ -59,6 +60,7 @@ namespace MisTrace.ApiService.Controllers
             return Ok(await _traceService.GetTracesByOrg(orgId));
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetTraceById([FromQuery] int traceId)
         {
