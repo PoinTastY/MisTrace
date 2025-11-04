@@ -30,7 +30,7 @@ namespace MisTrace.ApiService.Controllers
 
                 return CreatedAtAction(
                     nameof(GetTraceById),
-                    new { id = response.Id },
+                    new { traceId = response.Id },
                     response);
             }
             catch (Exception ex)

@@ -5,7 +5,7 @@ namespace MisTrace.Domain.Entities
 {
     public class Trace : Base.BaseEntity
     {
-        public Guid GlobalIdentifier { get; set; } = new Guid();
+        public Guid GlobalIdentifier { get; set; } = Guid.NewGuid();
         public required string Name { get; set; }
         public string? Description { get; set; }
         public required Guid CreatedById { get; set; }
