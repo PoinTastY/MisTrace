@@ -27,7 +27,12 @@ public static class ServiceDefaults
 
         services.AddEndpointsApiExplorer();
 
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DefaultIgnoreCondition =
+                    System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+            });
 
         services.AddSwaggerGen(c =>
             {

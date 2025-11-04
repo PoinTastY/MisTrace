@@ -1,4 +1,6 @@
-using MisTrace.Application.DTOs.TraceDtos;
+using Microsoft.EntityFrameworkCore;
+using MisTrace.Application.DTOs.Trace;
+using MisTrace.Application.DTOs.Trace.Commands;
 using MisTrace.Application.Interfaces;
 using MisTrace.Domain.Entities;
 using MisTrace.Domain.Interfaces.Repos;
@@ -14,26 +16,36 @@ public class TraceService : ITraceService
         _traceRepo = traceRepo;
         _milestoneRepo = milestoneRepo;
     }
-    public async Task<NewTraceResponse> AddNewTrace(NewTraceRequest request, Guid subject, int orgId)
+    public async Task<NewTraceResponse> AddNewTrace(NewTraceCommand request, Guid subject, int orgId)
     {
-        List<Milestone> milestones = [];
         //Ensure upcomming milestones does exists, else throw invalid
         if (request.Milestones != null && request.Milestones.Count() > 0)
-            milestones = (await _milestoneRepo.GetByIdsAsync(request.Milestones.Select(m => m.MilestoneId).ToArray())).ToList();
+            if ((await _milestoneRepo.GetByIdsAsync(request.Milestones.Select(m => m).ToArray(), orgId)).Count() != request.Milestones.Count())
+                throw new InvalidOperationException("Provided milestones seems to not exist");
 
-        Trace newTrace = await _traceRepo.CreateAsync(request.BuildTraceEntity(request, subject, orgId));
+        Trace newTrace = await _traceRepo.CreateAsync(request.BuildTraceEntity(subject, orgId));
 
-        return new NewTraceResponse
-        {
-            Id = newTrace.Id
-        };
+        return new NewTraceResponse(newTrace.GlobalIdentifier);
     }
-    public Task<GetTraceResponse> GetById(int id)
+
+    public async Task<TraceDto> GetByGlobalId(Guid id)
     {
-        throw new NotImplementedException();
+        Trace trace = await _traceRepo.GetByGlobalId(id);
+
+        return new TraceDto(trace);
     }
-    public Task<IEnumerable<GetTraceResponse>> GetTracesByOrg(int orgId)
+
+    public async Task<IEnumerable<TraceDto>> GetTracesByOrg(int orgId)
     {
-        throw new NotImplementedException();
+        return await _traceRepo.GetTracesByOrgAsync(orgId)
+            .Select(t => new TraceDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                CustomerId = t.CustomerId,
+                CustomerName = t.Customer != null ? t.Customer.Name : null,
+                IsComplete = t.TraceMilestones.Any(m => m.Milestone.ConcludesService)
+            })
+            .ToListAsync();
     }
 }

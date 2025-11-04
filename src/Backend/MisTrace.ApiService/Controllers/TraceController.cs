@@ -1,7 +1,9 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MisTrace.Application.DTOs.TraceDtos;
+using MisTrace.ApiService.Extensions;
+using MisTrace.Application.DTOs;
+using MisTrace.Application.DTOs.Trace;
+using MisTrace.Application.DTOs.Trace.Commands;
 using MisTrace.Application.Interfaces;
 
 namespace MisTrace.ApiService.Controllers
@@ -18,26 +20,13 @@ namespace MisTrace.ApiService.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateTrace([FromBody] NewTraceRequest request)
+        public async Task<IActionResult> CreateTrace([FromBody] NewTraceCommand request)
         {
-            string? subValue = User.FindFirstValue("sub");
-            if (subValue is null)
-                throw new UnauthorizedAccessException("Missing subject claim");
-
-            Guid subject = Guid.Parse(subValue);
-
-            string? orgValue = User.FindFirstValue("org");
-            if (orgValue is null)
-                throw new UnauthorizedAccessException("Missing org claim");
-
-            int orgId = int.Parse(orgValue);
-
-            if (orgId == 0)
-                throw new InvalidOperationException("Invalid org claim");
+            UserDto user = ClaimsExtensions.BuildUserFromClaims(User);
 
             try
             {
-                NewTraceResponse response = await _traceService.AddNewTrace(request, subject, orgId);
+                NewTraceResponse response = await _traceService.AddNewTrace(request, user.SubjectGuid, user.OrganizationId);
 
                 return CreatedAtAction(
                     nameof(GetTraceById),
@@ -54,19 +43,18 @@ namespace MisTrace.ApiService.Controllers
         [HttpGet("list")]
         public async Task<IActionResult> GetActiveTraces()
         {
-            if (!int.TryParse(User.FindFirst("org")?.Value, out int orgId))
-                return UnprocessableEntity();
+            UserDto user = ClaimsExtensions.BuildUserFromClaims(User);
 
-            return Ok(await _traceService.GetTracesByOrg(orgId));
+            return Ok(await _traceService.GetTracesByOrg(user.OrganizationId));
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetTraceById([FromQuery] int traceId)
+        public async Task<IActionResult> GetTraceById([FromQuery] Guid traceId)
         {
             try
             {
-                GetTraceResponse response = await _traceService.GetById(traceId);
+                TraceDto response = await _traceService.GetByGlobalId(traceId);
 
                 return Ok(response);
             }

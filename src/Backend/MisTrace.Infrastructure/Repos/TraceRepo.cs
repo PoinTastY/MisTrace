@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MisTrace.Domain.Entities;
 using MisTrace.Domain.Interfaces.Repos;
 using MisTrace.Infrastructure.Data;
@@ -30,8 +31,34 @@ public class TraceRepo : ITraceRepo
         await _dbContext.SaveChangesAsync();
     }
 
-    public IQueryable<Trace> GetTracesAsync(int top = 21)
+    public async Task<Trace> GetByGlobalId(Guid guid)
     {
-        return _dbContext.Traces.Take(top).AsQueryable();
+        return await _dbContext.Traces.SingleOrDefaultAsync(t => t.GlobalIdentifier == guid)
+            ?? throw new KeyNotFoundException("No trace was found");
+    }
+
+
+    public IQueryable<Trace> GetTracesByOrgAsync(int orgId, int page = 1, int top = 21)
+    {
+        if (orgId <= 0)
+            throw new ArgumentException("Organization ID must be greater than zero.", nameof(orgId));
+
+        if (page <= 0)
+            throw new ArgumentException("Page number must be greater than zero.", nameof(page));
+
+        if (top <= 0 || top > 100)
+            throw new ArgumentException("Top must be between 1 and 100 to prevent excessive load.", nameof(top));
+
+        int skip = (page - 1) * top;
+
+        return _dbContext.Traces
+            .Include(t => t.Customer)
+            .Include(t => t.TraceMilestones)
+                .ThenInclude(tm => tm.Milestone)
+            .AsNoTracking()
+            .Where(t => t.OrganizationId == orgId)
+            .OrderByDescending(t => t.Id) // or by CreatedDate if you have one
+            .Skip(skip)
+            .Take(top);
     }
 }

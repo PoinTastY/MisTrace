@@ -1,4 +1,3 @@
-using System;
 using MisTrace.Domain.Entities;
 
 namespace MisTrace.Domain.Interfaces.Repos;
@@ -10,5 +9,7 @@ public interface IMilestoneRepo
     /// </summary>
     /// <param name="ids"></param>
     /// <returns></returns>
-    Task<IEnumerable<Milestone>> GetByIdsAsync(int[] ids);
+    Task<IEnumerable<Milestone>> GetByIdsAsync(int[] ids, int orgId);
+
+    Task<IEnumerable<Milestone>> GetByOrg(int orgId, int page = 1, int top = 21);
 }
