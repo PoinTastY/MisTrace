@@ -116,6 +116,7 @@ public static class ServiceDefaults
         services.AddScoped<ITraceRepo, TraceRepo>();
         services.AddScoped<IMilestoneRepo, MilestoneRepo>();
         services.AddScoped<ITraceService, TraceService>();
+        services.AddScoped<IMilestoneService, MilestoneService>();
 
         return services;
     }

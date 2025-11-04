@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MisTrace.ApiService.Extensions;
 using MisTrace.Application.DTOs;
@@ -14,7 +15,9 @@ namespace MisTrace.ApiService.Controllers
         {
             _milestoneService = milestoneService;
         }
-        // GET: MilestoneController
+
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> GetMilestones()
         {
             UserDto user = ClaimsExtensions.BuildUserFromClaims(User);
