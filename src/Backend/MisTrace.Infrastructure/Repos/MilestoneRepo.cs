@@ -12,6 +12,14 @@ public class MilestoneRepo : IMilestoneRepo
     {
         _dbContext = dbContext;
     }
+
+    public async Task<Milestone> CreateAsync(Milestone milestone)
+    {
+        await _dbContext.AddAsync(milestone);
+
+        return milestone;
+    }
+
     public async Task<IEnumerable<Milestone>> GetByIdsAsync(int[] ids, int orgId)
     {
         if (orgId <= 0)

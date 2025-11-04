@@ -12,4 +12,5 @@ public interface IMilestoneRepo
     Task<IEnumerable<Milestone>> GetByIdsAsync(int[] ids, int orgId);
 
     Task<IEnumerable<Milestone>> GetByOrg(int orgId, int page = 1, int top = 21);
+    Task<Milestone> CreateAsync(Milestone milestone);
 }

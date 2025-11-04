@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MisTrace.ApiService.Extensions;
 using MisTrace.Application.DTOs;
+using MisTrace.Application.DTOs.Milestone.Commands;
 using MisTrace.Application.Interfaces;
 
 namespace MisTrace.ApiService.Controllers
@@ -22,7 +23,16 @@ namespace MisTrace.ApiService.Controllers
         {
             UserDto user = ClaimsExtensions.BuildUserFromClaims(User);
 
-            return Ok(await _milestoneService.GetMilestones(user.OrganizationId));
+            return Ok(await _milestoneService.GetMilestones(user));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateMilestone([FromBody] CreateMilestoneCommand request)
+        {
+            UserDto user = ClaimsExtensions.BuildUserFromClaims(User);
+
+            return Ok(await _milestoneService.CreateMilestone(request, user));
         }
     }
 }
