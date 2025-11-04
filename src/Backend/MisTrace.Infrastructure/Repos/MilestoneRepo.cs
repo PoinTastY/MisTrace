@@ -17,6 +17,8 @@ public class MilestoneRepo : IMilestoneRepo
     {
         await _dbContext.AddAsync(milestone);
 
+        await _dbContext.SaveChangesAsync();
+
         return milestone;
     }
 
